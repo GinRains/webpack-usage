@@ -1,4 +1,4 @@
-const { AsyncParallelHook } = require('tapable')
+const { AsyncParallelHook } = require('./tapable')
 const hook = new AsyncParallelHook(['name', 'age'])
 // 异步的hook，注册方式有3种  tap  tapAsync  tapPromise
 /* hook.tap('1', (name, age) => {
@@ -39,6 +39,7 @@ hook.callAsync('zf', 18, () => {
   console.timeEnd('cost')
 }) */
 
+/*
 console.time('cost')
 hook.tapPromise('1', (name, age) => {
   return new Promise((resolve, reject) => {
@@ -64,6 +65,33 @@ hook.tapPromise('3', (name, age, callback) => {
     }, 3000)
   })
 })
+hook.promise('zf', 18).then(() => {
+  console.log('done')
+  console.timeEnd('cost')
+}) */
+
+console.time('cost')
+hook.tap('1', (name, age) => {
+  console.log(1, name, age)
+})
+hook.tapAsync('2', (name, age, callback) => {
+  setTimeout(() => {
+    console.log(2, name, age)
+    callback()
+  }, 2000)
+})
+hook.tapPromise('3', (name, age, callback) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log(3, name, age)
+      resolve()
+    }, 3000)
+  })
+})
+
+// hook.callAsync('zf', 18, () => {
+//   console.log('done')
+// })
 hook.promise('zf', 18).then(() => {
   console.log('done')
   console.timeEnd('cost')
