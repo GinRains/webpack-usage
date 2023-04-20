@@ -9,6 +9,9 @@ class AutoExternalPlugin {
   }
   apply(compiler) {
     compiler.hooks.normalModuleFactory.tap('AutoExternalPlugin', (normalModuleFactory) => {
+      /* 这一步是否可以不做？
+      // 找出源码中，那些地方引入了jquery/lodash，并放入this.importModules中
+      // 普通的JS文件对应的勾子就是 javascript/auto
       normalModuleFactory.hooks.parser.for('javascript/auto').tap('AutoExternalPlugin', (parser) => {
         parser.hooks.import.tap('AutoExternalPlugin', (statement, source) => {
           // console.log(statement, source)
@@ -20,7 +23,7 @@ class AutoExternalPlugin {
           if(this.externalModules.includes(source))
             this.importedModules.add(source)
         })
-      })
+      }) */
       // 2. 改造模块的生产过程，拦截生成过程，判断如果是外部模块的话，生产一个外部模块并返回
       normalModuleFactory.hooks.factorize.tapAsync('AutoExternalPlugin', (resolveData, callback) => {
         const { request } = resolveData
@@ -36,7 +39,7 @@ class AutoExternalPlugin {
     compiler.hooks.compilation.tap('AutoExternalPlugin', (compilation) => {
       HtmlWebpackPlugin.getHooks(compilation).alterAssetTags.tapAsync('AutoExternalPlugin', (data, callback) => {
         const { assetTags } = data
-        for(let key of this.importedModules) {
+        for(let key of this.externalModules) {
           assetTags.scripts.unshift({
             tagName: 'script',
             voidTag: false,
