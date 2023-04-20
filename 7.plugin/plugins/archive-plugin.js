@@ -1,20 +1,20 @@
 /**
- * 打包dist目录下所有文件
+ * 编译完成后，打包dist目录下所有文件
  */
-const jszip = require('jszip')
+
+const Jszip = require('jszip')
 const { RawSource } = require('webpack-sources')
 class ArchivePlugin {
-  apply(compiler) {
-    compiler.hooks.compilation.tap('ArchivePlugin', (compilation) => {
-      compilation.hooks.processAssets.tapPromise({name: 'ArchivePlugin'}, (assets) => {
-        console.log('ArchivePlugin', assets)
-        const zpi = new jszip()
+  apply(compile) {
+    compile.hooks.compilation.tap('ArchivePlugin', (compilation) => {
+      compilation.hooks.processAssets.tapPromise({ name: 'ArchivePlugin' }, (assets) => {
+        const zip = new Jszip()
         for(const pathname in assets) {
-          const sourceObj = assets[pathname]
-          const sourceCode = sourceObj.source() // 返回源代码字符串
-          zpi.file(pathname, sourceCode)
+          const source = assets[pathname]
+          const sourceCode = source.source() // 返回源代码字符串
+          zip.file(pathname, sourceCode)
         }
-        return zpi.generateAsync({ type: 'nodebuffer' }).then(content => {
+        return zip.generateAsync({ type: 'nodebuffer' }).then(content => {
           assets[`${Date.now()}.zip`] = new RawSource(content)
           // assets[`${Date.now()}.zip`] = {
           //   source() {
