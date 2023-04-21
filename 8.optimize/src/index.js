@@ -14,7 +14,7 @@
 // import './index.css'
 // import './assets/xx.png'
 
-// 异步导入会重新生成一个代码入口（import('./one)）
+// ESM异步导入会重新生成一个代码入口（import('./one)），重新生成一个代码文件
 import one from './one'
 import two from './two'
 import three from './three'
