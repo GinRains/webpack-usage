@@ -1,3 +1,5 @@
-let title = require('./title')
+let module1 = require('./module1')
+let module2 = require('./module2')
+let $ = require('jquery')
 
-console.log(title)
+console.log(module1, module2, $)
