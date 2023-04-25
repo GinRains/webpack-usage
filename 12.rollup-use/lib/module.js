@@ -3,6 +3,7 @@ const { parse } = require('acorn')
 const analyse = require('./analyse')
 const { hasOwnProperty } = require('./utils')
 
+const SYSTEM_VARS = ['console', 'log']
 class Module {
   constructor({ code, path, bundle }) {
     this.code = new MagicString(code)
@@ -16,6 +17,7 @@ class Module {
     this.imports = {} // 模块导入了哪些变量
     this.exports = {} // 模块导出了哪些变量
     this.modifications = {}
+    this.canonicalNames = {} // 重命名的变量
     analyse(this.ast, this.code, this) // 分析语法树
     // console.log(this.definitions, this.imports, this.exports)
   }
@@ -69,12 +71,32 @@ class Module {
     } else {
       // 如果非导入模块，是本地模块的话，获取此变量的变量定义语句
       let statement = this.definitions[name]
-      if(statement && !statement._included) {
-        return this.expandAllStatement(statement)
+      if (statement) {
+        if (statement._included) {
+          return []
+        } else {
+          return this.expandAllStatement(statement)
+        }
       } else {
-        return []
+        if (SYSTEM_VARS.includes(name)) {
+          return []
+        } else {
+          throw new Error(`变量${name}既没有从外部导入，也没有在当前模块内声明！`)
+        }
       }
+
+      // if(statement && !statement._included) {
+      //   return this.expandAllStatement(statement)
+      // } else {
+      //   return []
+      // }
     }
+  }
+  rename(name, replacement) {
+    this.canonicalNames[name] = replacement
+  }
+  getCanonicalName(name) {
+    return this.canonicalNames[name] || name
   }
 }
 

@@ -1,5 +1,5 @@
-export default {
-  entry: './src/main.js',
+module.exports = {
+  input: './src/main.js',
   output: {
     file: 'dist/bundle.cjs.js',
     format: 'es', // amd/es/iife/umd/cjs

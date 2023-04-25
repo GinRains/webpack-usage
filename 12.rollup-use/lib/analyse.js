@@ -36,7 +36,9 @@ function analyse(ast, code, module) {
   let currentScope = new Scope({ name: '模块内顶级作用域' })
   function addToScope(name, statement, isBlockDeclaration) {
     currentScope.add(name, isBlockDeclaration)
-    if(!currentScope.parent) {
+    if(!currentScope.parent ||
+      // 如果当前作用域是块级作用域，且变量声明不是块级声明，是var
+      (currentScope.isBlock && !isBlockDeclaration)) {
       statement._defines[name] = true
       module.definitions[name] = statement
     }
