@@ -1,4 +1,4 @@
-import { rollup } from 'rollup';
+import { rollup, watch } from 'rollup';
 import rollupOptions from './rollup.config.js';
 
 /**
@@ -12,5 +12,14 @@ import rollupOptions from './rollup.config.js';
   const bundle = await rollup(rollupOptions)
   await bundle.generate(rollupOptions.output)
   await bundle.write(rollupOptions.output)
+  const watcher = watch(rollupOptions)
+  watcher.on('event', (event) => {
+    // console.log(event)
+  })
+
+  setTimeout(() => {
+    watcher.close()
+  }, 1000)
+
   await bundle.close()
 })()
