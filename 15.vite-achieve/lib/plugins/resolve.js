@@ -23,11 +23,11 @@ function resolvePlugin({ root }) {
           id: fsPath
         }
       }
-      if(path.startsWith('@')) {
-        const baseDir = alias['@']
-        const fsPath = pathLib.resolve(baseDir, path)
-        return { id: fsPath }
-      }
+      // if(path.startsWith('@')) {
+      //   const baseDir = alias['@']
+      //   const fsPath = pathLib.resolve(baseDir, path)
+      //   return { id: fsPath }
+      // }
       let res = tryNodeResolve(path, importer, root)
       if(res) return res
     }
